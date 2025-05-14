@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>MineCubes Alpha</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta property="og:site_name" content="MineCubes">
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="MineCubes JS">
+	<meta property="og:description" content="MineCubes is a minecraft web clone made by Slender303YT.">
+	<meta property="og:image" content="http://minecubes.rf.gd/screenshot.png">
+	<meta name="author" content="Slender303YT, josebarriav2011@gmail.com">
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<style type="text/css">*{user-select:none}body{margin:0;overflow:hidden;image-rendering:pixelated;font-family:minecraft;background-image:url(assets/images/bg.png)}@font-face{font-family:minecraft;src:url(assets/font.otf)}.button{display:block;margin:auto;width:400px;height:40px;background-image:url(assets/images/button.png);background-size:100%;background-repeat:no-repeat;text-align:center;cursor:pointer}.button_text,.slider_text{margin-top:8px;display:block;color:#fff}h1,h2,h3,h4,h5{color:#fff;text-shadow:1px 1px #888}.mbb{width:48px}.button:hover{background-image:url(assets/images/selected_button.png)}.button_text{height:32px;padding-top:8px}.slider,.slider_container{width:400px;background-image:url(assets/images/slider_container.png);height:40px;background-size:100%;background-repeat:no-repeat}.button_text:hover{color:#ee2;text-shadow:1px 1px #880}.slider_container{display:block;margin:8px auto auto;text-align:center}.slider{-webkit-appearance:none;border:0;outline:0;margin-top:0;margin-left:0}.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:40px;border:0;background-image:url(assets/images/slider.png);background-size:100%;background-repeat:no-repeat;cursor:pointer}.slider::-moz-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:40px;border:0;background-image:url(assets/images/slider.png);background-size:100%;background-repeat:no-repeat;cursor:pointer}.transparent_menu{display:none;width:100%;height:100%;position:absolute;left:0;top:0;background-image:url(assets/images/bg1.png);text-align:center}.text_area,.text_area_container{width:400px;height:40px;background-image:url(assets/images/slider_container.png);background-size:100%;background-repeat:no-repeat}.text_area_container{display:block;margin:auto}.text_area{appearance:none;color:#fff}@keyframes saving{0%{background-position:0}100%{background-position:-192px}}#saving{width:64px;height:96px;background-image:url(assets/images/saving.png);animation:.5s steps(3) infinite saving}.loading_progress{background-color:#ddd;border:2px solid #aaa;margin:auto}.loading_bar{width:0%;height:20px;background-color:#cd5c5c;transition:.1s}</style>
+
+	<!-- Libraries -->
+	<script src="assets/js/libraries/three.js"></script>
+	<script src="assets/js/libraries/perlin.js"></script>
+	<script src="assets/js/libraries/PLC.js"></script>
+	<script src="assets/js/libraries/Timer.js"></script>
+	<script src="assets/js/libraries/world_save.js"></script>
+	<script src="assets/js/libraries/Sound.js"></script>
+	<script src="assets/js/libraries/LZString.js"></script>
+</head>
+<body>
+	<script>window.onload=_=>{let tl=["bg1","button","selected_button","logo","saving","slider","slider_container","pointer","mobile_forward","mobile_backward","mobile_left", "mobile_right"],ld=0,txt=game.getElement("loading_text"),b=game.getElement("loading_bar");function ftloc(){let e=new Image,t=tl[ld];e.src=`assets/images/${t}.png`,e.width="1px",document.body.appendChild(e),txt.innerText=`Loading "assets/images/${t}.png"...`,e.onload=t=>{ld++,e.style.display="none",b.style.width=`${ld/tl.length*100}%`,ld==tl.length?(txt.innerText="Starting Game...",b.style.width="100%",setTimeout(e=>{b.style.transition="1s",b.style.backgroundColor="#FFF"},100),setTimeout(e=>{game.enter_scene("menu","loading_scripts",!1)},1200)):ftloc()}}ftloc()}</script>
+
+	<!-- Mobile Controls -->
+	<section id="mobile_controls" style="position: absolute; left: 0px; top: 0px; display: none">
+		<img src="assets/images/mobile_forward.png" class="mbb" id="mc_f" style="position: absolute; left: 80px">
+		<img src="assets/images/mobile_left.png" class="mbb" id="mc_l" style="position: absolute; left: 32px">
+		<img src="assets/images/mobile_backward.png" class="mbb" id="mc_b" style="position: absolute; left: 80px">
+		<img src="assets/images/mobile_right.png" class="mbb" id="mc_r" style="position: absolute; left: 128px">
+		<img src="assets/images/mobile_jump.png" class="mbb" id="mc_j" style="position: absolute">
+	</section>
+
+	<h4 id="version" style="position: absolute; left: 8px; top: -12px">MineCubes Alpha 0.2.0</h4>
+
+	<!-- Loading Scripts -->
+	<section id="loading_scripts" style="margin: auto; text-align: center; margin-top: 35vh">
+		<h4>Loading Game...</h4>
+		<br>
+		<div class="loading_progress" style="width: 40%"><div class="loading_bar" id="loading_bar"></div></div>
+		<h4 id="loading_text">Loading Scripts...</h4>
+	</section>
+
+	<!-- Menu -->
+	<section id="menu" style="display: none">
+		<img src="assets/images/logo.png" style="display: block; margin: auto; margin-top: 32px">
+		<div style="margin-top: 14vh">
+			<div class="button" onclick="game.enter_scene('worlds_menu', 'menu')"><h3 class="button_text">Singleplayer</h3></div>
+			<div class="button" onclick="game.enter_scene('help_menu', 'menu')"><h3 class="button_text">Help</h3></div>
+			<br>
+			<br>
+			<div class="button" onclick="game.enter_scene('menu_options', 'menu')"><h3 class="button_text">Options...</h3></div>
+		</div>
+	</section>
+
+	<!-- Game UI -->
+	<section id="game_ui" style="display: none">
+		<img src="assets/images/pointer.png" id="pointer" style="width: 4%; position: absolute">
+		<img src="assets/images/blocks/cobblestone.png" id="selected_elem" style="position: absolute; right: 4px; bottom: 4px;">
+	</section>
+
+	<!-- Pause menu -->
+	<section id="pause_menu" class="transparent_menu">
+		<div style="margin-top: 25vh" id="pause0">
+			<div class="button" onclick="game.resume()"><h3 class="button_text">Resume</h3></div>
+			<br>
+			<br>
+			<div class="button" onclick="f_pause.goto(2)"><h3 class="button_text">File Options...</h3></div>
+			<br>
+			<div class="button" onclick="f_pause.goto(1)"><h3 class="button_text">Options...</h3></div>
+			<div class="button" onclick="game.quit()"><h3 class="button_text">Save and quit to title</h3></div>
+		</div>
+		<div style="margin-top: 25vh; display: none" id="pause1">
+			<div class="button" onclick="f_pause.lights()"><h3 class="button_text" id="lights_text">Lights: </h3></div>
+			<div class="slider_container">
+				<input type="range" min="0" max="200" value="100" class="slider" id="sensitivity_range">
+				<h3 class="slider_text" id="sensitivity_text">Sensibility: </h3>
+			</div>
+			<br>
+			<br>
+			<br>
+			<div class="slider_container">
+				<input type="range" min="2" max="8" value="2" class="slider" id="rd_range">
+				<h3 class="slider_text" id="rd_text">Render Distance: </h3>
+			</div>
+			<br>
+			<br>
+			<br>
+			<div class="button" onclick="f_pause.goto(0)"><h3 class="button_text">Done</h3></div>
+		</div>
+		<div style="margin-top: 30vh; display: none" id="pause2">
+			<div class="button" onclick="saving.save_to_file(game.world_name)"><h3 class="button_text">Save to file</h3></div>
+			<div class="button" onclick="saving.load_from_file()"><h3 class="button_text">Load from file</h3></div>
+			<br>
+			<br>
+			<div class="button" onclick="f_pause.goto(0)"><h3 class="button_text">Done</h3></div>
+		</div>
+	</section>
+
+	<!-- Menu options -->
+	<section style="margin-top: 4vh; display: none; text-align: center" id="menu_options">
+		<h3 style="color: #FFF">Options</h3>
+		<br>
+		<div class="button" onclick="f_pause.lights()"><h3 class="button_text" id="lights2_text">Lights: </h3></div>
+		<div class="slider_container">
+			<input type="range" min="0" max="200" value="100" class="slider" id="sensitivity2_range">
+			<h3 class="slider_text" id="sensitivity2_text">Sensibility: </h3>
+		</div>
+		<br>
+		<br>
+		<br>
+		<div class="slider_container">
+			<input type="range" min="2" max="8" value="2" class="slider" id="rd2_range">
+			<h3 class="slider_text" id="rd2_text">Render Distance: </h3>
+		</div>
+		<div class="button" onclick="game.enter_scene('menu', 'menu_options')" style="margin-top: 44vh"><h3 class="button_text">Done</h3></div>
+	</section>
+
+	<!-- Help menu -->
+	<section id="help_menu" style="display: none; margin: auto; text-align: center; margin-top: 24vh">
+		<h3 style="color: #FFF;">Controls:<br>Move the player with the keys "A W S D",<br>Rotate the camera with the mouse,<br>Break the blocks with left click,<br>Place blocks with right click,<br>Jump with space,<br>Select block by numbers 1, 2, 3, 4, 5 and 6,<br>Pause with button "P".<br>Have Fun!</h3>
+		<div class="button" onclick="game.enter_scene('menu', 'help_menu')"><h3 class="button_text">Done</h3></div>
+	</section>
+
+	<!-- Worlds menu -->
+	<section id="worlds_menu" style="display: none; position: absolute">
+		<div class="button" onclick="game.world_creation(1)"><h3 class="button_text" id="tworld1">World 1</h3></div>
+		<div class="button" onclick="game.world_creation(2)"><h3 class="button_text" id="tworld2">World 2</h3></div>
+		<div class="button" onclick="game.world_creation(3)"><h3 class="button_text" id="tworld3">World 3</h3></div>
+		<div class="button" onclick="game.world_creation(4)"><h3 class="button_text" id="tworld4">World 4</h3></div>
+		<div class="button" onclick="game.world_creation(5)"><h3 class="button_text" id="tworld5">World 5</h3></div>
+		<br>
+		<div class="button" onclick="game.enter_scene('worlds_deletion_menu', 'worlds_menu')"><h3 class="button_text">Delete world</h3></div>
+		<br>
+		<br>
+		<div class="button" onclick="game.enter_scene('menu', 'worlds_menu')"><h3 class="button_text">Back</h3></div>
+	</section>
+
+	<!-- Worlds Deletion menu -->
+	<section id="worlds_deletion_menu" style="display: none; position: absolute; text-align: center">
+		<h3 style="color: #FFF">Which world delete?</h3>
+		<br>
+		<div class="button" onclick="game.delete_world(1)"><h3 class="button_text" id="t1world1">World 1</h3></div>
+		<div class="button" onclick="game.delete_world(2)"><h3 class="button_text" id="t1world2">World 2</h3></div>
+		<div class="button" onclick="game.delete_world(3)"><h3 class="button_text" id="t1world3">World 3</h3></div>
+		<div class="button" onclick="game.delete_world(4)"><h3 class="button_text" id="t1world4">World 4</h3></div>
+		<div class="button" onclick="game.delete_world(5)"><h3 class="button_text" id="t1world5">World 5</h3></div>
+		<br>
+		<br>
+		<div class="button" onclick="game.enter_scene('worlds_menu', 'worlds_deletion_menu')"><h3 class="button_text">Cancel</h3></div>
+	</section>
+
+	<!-- World creation menu -->
+	<section id="world_creation_menu" style="display: none; position: absolute">
+		<div class="slider_container">
+			<input type="range" min="1" max="8" value="2" class="slider" id="world_size_range">
+			<h3 class="slider_text" id="world_size_text">World Size: 2</h3>
+		</div>
+		<br>
+		<br>
+		<div class="button" onclick="game.start()"><h3 class="button_text">Create World</h3></div>
+		<br>
+		<br>
+		<div class="button" onclick="game.enter_scene('worlds_menu', 'world_creation_menu')"><h3 class="button_text">Back</h3></div>
+	</section>
+
+	<div id="saving" style="position: absolute; display: none; right: 4px; top: 4px"></div>
+	<div id="saving_world" style="text-align: center; display: none; margin-top: 40vh"><h3 style="color: #FFF">Saving Chunks</h3></div>
+
+	<!-- Scripts -->
+	<script src="assets/js/game_setup.js"></script>
+	<script src="assets/js/textures.js"></script>
+	<script src="assets/js/Block.js"></script>
+	<script src="assets/js/world_generation.js"></script>
+	<script src="assets/js/entities/Player.js"></script>
+	<script src="assets/js/Game.js"></script>
+	<script src="assets/js/pause_functions.js"></script>
+	<script src="assets/js/mobile.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script src="assets/js/controls.js"></script>
+
+	<script type="text/javascript">
+		let wsr_elem = game.getElement("world_size_range"), s2r_elem = game.getElement("sensitivity2_range"), sr_elem = game.getElement("sensitivity_range"),rdr_elem = game.getElement("rd_range");
+
+		wsr_elem.addEventListener("change" , _ => {
+			Sound.loadplay_sound("click.ogg");
+			document.getElementById("world_size_text").innerText = `World Size: ${wsr_elem.value}`;
+			WORLD_SIZE = parseInt(wsr_elem.value);
+			
+			fix_all_gen_vars();
+		});
+
+		s2r_elem.addEventListener("change", _ => f.pause.sensitivity());
+		sr_elem.addEventListener("change", _ => f_pause.sensitivity());
+		rdr_elem.addEventListener("change", _ => f_pause.render_distance());
+	</script>
+</body>
+</html>
